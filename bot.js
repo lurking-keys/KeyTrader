@@ -36,21 +36,21 @@ bot.on('message', function(user, userID, channelID, message, event) {
 		  }
 	});
 	fs.access('./keys.txt', fs.F_OK, (err) => {
-		  if (err) {
+		if (err) {
 			logger.info('Seeding keys file.');
 			fs.readFile(path.join(__dirname, 'key_seed.txt'), {encoding: 'utf-8'}, function (err,text) {
 				if (!err) {
 					fs.writeFile("keys.txt", text, (err) => {
-					  if (err) { 
-						logger.info(err);
-					  }
+						if (err) { 
+							logger.info(err);
+						}
 					});
 				} else {
 					logger.info(err);
 				}
 			});
 			return
-		  }
+		}
 	});
 	fs.access('./key_log.txt', fs.F_OK, (err) => {
 		  if (err) {
