@@ -1,0 +1,10 @@
+{
+	"name": "KeyTrader",
+	"version": "0.0.1",
+	"description": "Key trading discord bot. It's that simple.",
+	"author": "lurking",
+	"dependencies": {
+		"discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+		"winston": "^3.2.1"
+	}
+}
