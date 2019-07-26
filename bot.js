@@ -37,14 +37,24 @@ bot.on('message', function(user, userID, channelID, message, event) {
 	});
 	fs.access('./keys.txt', fs.F_OK, (err) => {
 		  if (err) {
-			logger.info('Creating blank userIDs file.');
-			fs.closeSync(fs.openSync("keys.txt", 'w'));
+			logger.info('Seeding keys file.');
+			fs.readFile(path.join(__dirname, 'key_seed.txt'), {encoding: 'utf-8'}, function (err,text) {
+				if (!err) {
+					fs.writeFile("keys.txt", text, (err) => {
+					  if (err) { 
+						logger.info(err);
+					  }
+					});
+				} else {
+					logger.info(err);
+				}
+			});
 			return
 		  }
 	});
 	fs.access('./key_log.txt', fs.F_OK, (err) => {
 		  if (err) {
-			logger.info('Creating blank userIDs file.');
+			logger.info('Creating blank key log file.');
 			fs.closeSync(fs.openSync("key_log.txt", 'w'));
 			return
 		  }
@@ -54,7 +64,6 @@ bot.on('message', function(user, userID, channelID, message, event) {
 		var args = message.substring(1).split(' ');
 		var cmd = args.shift();
 		switch(cmd) {
-			// !ping
 			/*case 'pmme':
 				bot.sendMessage({to:userID,message:"PM'ed my dude"});
 				break;*/
@@ -97,13 +106,13 @@ bot.on('message', function(user, userID, channelID, message, event) {
 										  //file removed
 										} catch(err) {
 										  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
-										  console.log(err);
+										  logger.info(err);
 										}
 										//write new users file
 										fs.writeFile("userIDs.txt", lines.join('\n').concat('\n',userID), (err) => {
 										  if (err) { 
 											bot.sendMessage({to:channelID,message: "Error in fs.writeFile, see console for details: ".concat(err)});
-											console.log(err);
+											logger.info(err);
 										  }
 										});
 										
@@ -114,13 +123,13 @@ bot.on('message', function(user, userID, channelID, message, event) {
 										  //file removed
 										} catch(err) {
 										  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
-										  console.log(err);
+										  logger.info(err);
 										}
 										// time to write new file
 										fs.writeFile("keys.txt", lines.join('\n'), (err) => {
 										  if (err) { 
 											bot.sendMessage({to:channelID,message: "Error in fs.writeFile, see console for details: ".concat(err)});
-											console.log(err);
+											logger.info(err);
 										  }
 										});
 									}
@@ -163,7 +172,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 								  //file removed
 								} catch(err) {
 								  bot.sendMessage({to:channelID,message: "Error in fs.readFile, see console for details: ".concat(err)});
-								  console.log(err);
+								  logger.info(err);
 								}
 								// time to write new file
 								if (lines.length == 0) {
@@ -172,7 +181,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 									fs.writeFile("keys.txt", lines.join('\n').trim(), (err) => {
 									  if (err) { 
 										bot.sendMessage({to:channelID,message: "Error in fs.writeFile, see console for details: ".concat(err)});
-										console.log(err);
+										logger.info(err);
 									  }
 									});
 								}
@@ -199,7 +208,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 					  //file removed
 					} catch(err) {
 					  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
-					  console.log(err);
+					  logger.info(err);
 					}
 					fs.closeSync(fs.openSync("userIDs.txt", 'w'));
 					bot.sendMessage({to:channelID,message: "User list cleared."});
