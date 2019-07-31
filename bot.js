@@ -3,7 +3,7 @@ var logger = require('winston');
 var auth = require('./auth.json');
 // Configure logger settings
 logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
+logger.add(new logger.transports.Console(), {
     colorize: true
 });
 logger.level = 'debug';
@@ -32,7 +32,6 @@ bot.on('message', function(user, userID, channelID, message, event) {
 		  if (err) {
 			logger.info('Creating blank userIDs file.');
 			fs.closeSync(fs.openSync("userIDs.txt", 'w'));
-			return
 		  }
 	});
 	fs.access('./keys.txt', fs.F_OK, (err) => {
@@ -49,14 +48,12 @@ bot.on('message', function(user, userID, channelID, message, event) {
 					logger.info(err);
 				}
 			});
-			return
 		}
 	});
 	fs.access('./key_log.txt', fs.F_OK, (err) => {
 		  if (err) {
 			logger.info('Creating blank key log file.');
 			fs.closeSync(fs.openSync("key_log.txt", 'w'));
-			return
 		  }
 	});
 
@@ -69,8 +66,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 				break;*/
 			case 'getkey':
 				//var fs = require('fs'),
-				var path = require('path'),    
-					keyPath = path.join(__dirname, 'keys.txt');
+				var keyPath = path.join(__dirname, 'keys.txt');
 					
 				// check they haven't gotten a key before
 				fs.readFile(path.join(__dirname, 'userIDs.txt'), {encoding: 'utf-8'}, function (err,text) {
@@ -86,9 +82,9 @@ bot.on('message', function(user, userID, channelID, message, event) {
 							fs.readFile(keyPath, {encoding: 'utf-8'}, function(err,text){
 								if (!err) {
 									var lines = text.split('\n');
-									var key = lines.shift()
+									var key = lines.shift();
 									if (!/^[a-zA-Z0-9]{15}$/.test(key)) {
-										bot.sendMessage({to:channelID, message: "Out of keys at the moment :/ please check back later!"})
+										bot.sendMessage({to:channelID, message: "Out of keys at the moment :/ please check back later!"});
 										var date = new DateTime();
 										fs.appendFileSync('key_log.txt', '\n'.concat(new Date().getTime(), ": User ", user, " tried to get a key but we were out."));
 									} else {
@@ -102,7 +98,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 										// add user to list
 										//const fs = require('fs');
 										try {
-										  fs.unlinkSync(path.join(__dirname, 'userIDs.txt'))
+										  fs.unlinkSync(path.join(__dirname, 'userIDs.txt'));
 										  //file removed
 										} catch(err) {
 										  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
@@ -119,7 +115,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 										// new file is ready, remove old file
 										
 										try {
-										  fs.unlinkSync(path.join(__dirname, 'keys.txt'))
+										  fs.unlinkSync(path.join(__dirname, 'keys.txt'));
 										  //file removed
 										} catch(err) {
 										  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
@@ -168,7 +164,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 								// new file is ready, remove old file
 								//const fs = require('fs');
 								try {
-								  fs.unlinkSync(path.join(__dirname, 'keys.txt'))
+								  fs.unlinkSync(path.join(__dirname, 'keys.txt'));
 								  //file removed
 								} catch(err) {
 								  bot.sendMessage({to:channelID,message: "Error in fs.readFile, see console for details: ".concat(err)});
@@ -190,7 +186,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 								bot.sendMessage({to:userID, message: "That doesn't look like a key. Please Please contact 'lurking' if you're getting this error with a real key."});
 								bot.sendMessage({to:userID, message: "Example command usage: !givekey xdZpPjfMANtUKjf"});
 								logger.info("Possibly false key: ".concat(newkey," received from ", user));
-								fs.appendFileSync('key_log.txt', '\n'.concat(new Date().getTime(), ": User ", user, " tried to give false key ", key));
+								fs.appendFileSync('key_log.txt', '\n'.concat(new Date().getTime(), ": User ", user, " tried to give false key ", newkey));
 							}
 							
 						} else {
@@ -204,7 +200,7 @@ bot.on('message', function(user, userID, channelID, message, event) {
 				if( '603607990813065217' == userID || '600768173955874838' == userID) {
 					
 					try {
-					  fs.unlinkSync(path.join(__dirname, 'userIDs.txt'))
+					  fs.unlinkSync(path.join(__dirname, 'userIDs.txt'));
 					  //file removed
 					} catch(err) {
 					  bot.sendMessage({to:channelID,message: "Error in fs.unlinkSync, see console for details: ".concat(err)});
